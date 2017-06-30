@@ -1,5 +1,7 @@
 # yelp_SIM
-Social Influence maximization, a community based approach for yelp dataset Challenge 2017
+This project is Andrea Capuano and Gabriella Esposito submission for the yelp dataset challenge 2017. It is also the final project for the course of Big Data and business inteligence @ University Of Naples Federico II [2]. 
+
+Our analysis is focused on social influence maximization, we attempt to find who is the most influencial user among the given dataset. To do so, we use the assumption that modern social networks tend to have community structure. We can identify such communities with different algorithms, we chose the Label Propagation Algorithm for its computational advantages and spark compatibility.
 
 # Files description
 
@@ -7,6 +9,45 @@ Social Influence maximization, a community based approach for yelp dataset Chall
  * LPAcalc.scala -> Run of the Label Propagation Algorithm on the yelp dataset, using mongodb and the cleaned user files.
  * Run.scala -> Run of the algorithm using yelp data.
  * Cleaner.java and Linkremoval.scala -> Utility scripts to clean up the datasets from unwanted parameters.
+ 
+# Architecture
+
+![Used architecture][arch]
+
+[arch]: http://i.imgur.com/Yep1Zju.png "arch"
+
+* Mongodb as NoSQL database.
+* Databricks as computational platform.
+* Spark as processional engine
+* Scala as programming language
+* GraphFrame + GraphX as graph abstraction libraries.
+ 
+# Social Network Influence Analysis
+
+The analysis we made on the yelp's dataset is a simple answer to the question "who are the most influencial users on Yelp". At this scope we worked only on the user's dataset. In particular an user has the following attributes:
+  - User ID
+  - Name
+  - Number of "useful"
+  - Number of "funny"
+  - Number of "Cool"
+  - Number of "followers"
+  - Number of reviews
+  - Number of each different compliment
+  - List of friends (an array of user ids)
+  - Years of elite
+
+Using these attributes we modeled the computation of a coefficient that describes the impact of an user on the network and especially on its neighbors. Thanks to said coefficient, we are able to use Kempe's indipendent cascade model [1]. The basic idea is the following: given an user with impact K and N friends, if the user is active it has a chance to activate each of its N friends with a probability equal to K.  To do this a coin is flipped (a special coin with probability of each outcome equals to K and 1-K) on each of the user's friends who are yet to be activated. A positive outcome of the coin flip will result in the activation of the friend's node, a negative outcome will result in an inability to be furtherly activated from the same user.
+
+The impact coefficient's formula is calculated as follows:
+We started collecting the maximum value of each attribute in the whole data-set an then considered for each user the ratio between his attributes and the relative max value. After that we took a percentage of each of this ratio and added them together. The meaning of this percentage relies on the idea that each attribute has a different value in term of impact in a possible influence of an other user (for example an user will be more likely to be influenced if I have more "usefuls" than "friends").
+
+Let's now look at the general idea of calculating the most influential users.
+The graph that comes out of the user data set is particularly large (about a million users) and therefore Kempe's greedy approach for influence calculation each node would require computational resources and time to compute that we are unable to sustain. 
+So let's make some assumptions:
+- Every user with zero friends will be cut off the graph
+- The algorithm will be runned only on a well-defined number of vertices established among those who have the higher pagerank
+- We'll divide the initial network into communities and each of them will represent a subnetwork to be analyzed separately (this assumes that the likelihood that a user belonging to a community influences one belonging to a different community is really low to the point of neglecting it)
+
 
 # GraphX + Pregel Algorithm
 
@@ -34,7 +75,7 @@ If two or more nodes attempt to activate the same node, the merge function steps
 * 2 attempts to activate 1 and succeeds
 * 1 attemtps to activate 5 and 3 but only actiavtes 3. 
 
-![alt text][ex]
+![example1][ex]
 
 [ex]: https://thumbs.gfycat.com/ParallelBriskCapeghostfrog-size_restricted.gif "Example run"
 
