@@ -102,6 +102,10 @@ The script finishes since 3 didn't manage to influence two. In the end 1 influen
 
 1 influences an average of 5 nodes.
 
+# Citations
 
+1.  [Maximizing the Spread of Influence through a Social Network](https://www.cs.cornell.edu/home/kleinber/kdd03-inf.pdf)
+
+2. [Big Data analytics and Business intelligence @ Federico II by Professor Antonio Picariello](https://www.docenti.unina.it/insegnamenti/programmaCompletoPub.do?nomeDocente=ANTONIO&cognomeDocente=PICARIELLO&idDocente=414e544f4e494f504943415249454c4c4f5043524e544e3634543038413530394a&codInse=U0603&nomeInsegnamento=BIG%20DATA%20ANALYTICS%20AND%20BUSINESS%20INTELIGENCE&codCorso=M63&nomeCorso=INGEGNERIA%20INFORMATICA%20&progInse=1)
 
 
